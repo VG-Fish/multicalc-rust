@@ -67,7 +67,10 @@ pub use linear_algebra::{Matrix, Vector};
 pub use linear_algebra::{Matrix2D, Matrix3D, Matrix4D, Matrix6D, Vector2D, Vector3D, Vector6D};
 
 /// Solvers for the two matrix equations behind optimal linear feedback.
-pub use linear_algebra::{solve_discrete_lyapunov, solve_discrete_riccati};
+pub use linear_algebra::{
+    solve_discrete_lyapunov, solve_discrete_lyapunov_with_budget, solve_discrete_riccati,
+    solve_discrete_riccati_with_budget,
+};
 
 /// Zero-order-hold, Van Loan, and white-noise discretization of continuous-time linear systems.
 pub use discretization::{q_discrete_white_noise, van_loan, zoh};
@@ -109,7 +112,10 @@ pub use kinematics::{
 };
 
 /// Occupancry grid and scan geometry
-pub use mapping::{MutableOccupancyMap, OccupancyMap, ScanGeometry};
+pub use mapping::{
+    CellState, CostGrid, DistanceField, DistanceTransformWorkspace, GridGeometry, LogOddsGrid,
+    MutableOccupancyMap, OccupancyGrid, OccupancyMap, RayStep, RayWalk, ScanGeometry,
+};
 
 /// Heap-based occupancy grid for large maps
 #[cfg(feature = "alloc")]
@@ -139,7 +145,7 @@ pub use estimation::{GaussianLikelihood, Likelihood, ParticleFilter, ResamplingS
 /// Monte Carlo Localization using particle filter estimation.
 #[cfg(feature = "alloc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "alloc")))]
-pub use estimation::{BeamModel, InitialParticleCloud, MonteCarloLocalizer};
+pub use estimation::{BeamModel, InitialParticleCloud, LikelihoodFieldModel, MonteCarloLocalizer};
 
 /// Seedable pseudo-random generator and the trait its uniform and normal draws come from.
 pub use random::{Pcg32, RandomSource};
@@ -176,6 +182,13 @@ pub use motion::{
 };
 
 /// A single rigid body's motion under the forces on it, and the state an integrator carries.
+/// Grid and sampling-based path planners, and the workspaces their searches run in.
+pub use planning::{
+    BoxSpace, CostmapCost, GridConnectivity, GridHeuristic, GridPlanner, GridSearch,
+    GridSearchWorkspace, PlanReport, Prm, PrmWorkspace, Rrt, RrtStar, RrtWorkspace, StateSpace,
+    StateValidity, TraversalCost, UniformCost,
+};
+
 pub use dynamics::{ArticulatedBody, DynamicsWorkspace, RigidBody, RigidBodyAcceleration};
 
 /// Rotor mixing and its inverse, first-order rotor lag, and a position-controlled joint's servo.
@@ -184,8 +197,8 @@ pub use plant::{MultirotorMixer, PositionServo, RotorCommands, RotorLag, RotorSp
 /// Per-module-family error enums and the umbrella they convert into.
 pub use error::{
     CalcError, ControlError, DiffError, DynamicsError, EstimationError, IntegrateError,
-    KinematicsError, LinalgError, MappingError, MotionError, PlantError, PolynomialError,
-    SignalError, SolveError, SpatialError,
+    KinematicsError, LinalgError, MappingError, MotionError, PlanningError, PlantError,
+    PolynomialError, SignalError, SolveError, SpatialError,
 };
 
 pub mod approximation;
@@ -198,11 +211,13 @@ pub mod gaussian_tables;
 pub mod kinematics;
 pub mod linear_algebra;
 pub mod mapping;
+pub mod mlp_inference;
 pub mod motion;
 pub mod numerical_derivative;
 pub mod numerical_integration;
 pub mod ode;
 pub mod optimization;
+pub mod planning;
 pub mod plant;
 pub mod polynomial;
 pub mod prelude;
